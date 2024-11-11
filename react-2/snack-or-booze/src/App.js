@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
+import axios from "axios";
 import Home from "./Home";
 import SnackOrBoozeApi from "./Api";
 import NavBar from "./NavBar";
 import { Route, Switch } from "react-router-dom";
-import Menu from "./FoodMenu";
-import Snack from "./FoodItem";
-import FoodItem from "./FoodItem";
 import FoodMenu from "./FoodMenu";
+import FoodItem from "./FoodItem";
+import NewFoodForm from "./NewFoodForm";
+import { addSnack, addDrink } from "./Add";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [snacks, setSnacks] = useState([]);
-  const [drinks, setDrinks] = useState([])
+  const [drinks, setDrinks] = useState([]);
 
   useEffect(() => {
     async function getSnacks() {
@@ -26,12 +27,12 @@ function App() {
 
   useEffect(() => {
     async function getDrinks() {
-      let snacks = await SnackOrBoozeApi.getDrinks();
-      setDrinks(drinks)
-      setIsLoading(false)
+      let drinks = await SnackOrBoozeApi.getDrinks();
+      setDrinks(drinks);
+      setIsLoading(false);
     }
-    getDrinks
-  }, [])
+    getDrinks();
+  }, []);
 
   if (isLoading) {
     return <p>Loading &hellip;</p>;
@@ -39,13 +40,12 @@ function App() {
 
   return (
     <div className="App">
-
       <BrowserRouter>
         <NavBar />
         <main>
           <Switch>
 
-          <Route exact path="/">
+            <Route exact path="/">
               <Home snacks={snacks} drinks={drinks} />
             </Route>
 
@@ -73,12 +73,16 @@ function App() {
               <NewFoodForm type="drink" addDrink={addDrink} setDrinks={setDrinks} />
             </Route>
 
-            <p>Hmm. I can't seem to find what you want</p>
+            <Route>
 
+              <p>Hmmm. I can't seem to find what you want.</p>
+
+            </Route>
           </Switch>
-        </main>
-      </BrowserRouter>
 
+        </main>
+        
+      </BrowserRouter>
     </div>
   );
 }
